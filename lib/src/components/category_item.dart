@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meals/src/models/category.dart';
+import 'package:meals/src/utils/app_routes.dart';
 
 class CategoryItem extends StatelessWidget {
   final Category category;
@@ -10,7 +11,7 @@ class CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
-        '/categories-meals',
+        AppRoutes.categoriesMeals,
         arguments: category,
       ),
       splashColor: Theme.of(context).primaryColor,
