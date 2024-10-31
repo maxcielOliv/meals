@@ -106,6 +106,12 @@ class MealDetailPage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).cardColor,
+          child: const Icon(Icons.star),
+          onPressed: () {
+            Navigator.of(context).pop(meal.id);
+          }),
     );
   }
 }
