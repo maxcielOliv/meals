@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meals/src/components/main_drawer.dart';
 import 'package:meals/src/screens/categories_page.dart';
 import 'package:meals/src/screens/favorite_page.dart';
 
@@ -27,8 +28,12 @@ class _TabsPageState extends State<TabsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(_screens[_selectedScreenIndex]['title'] as String),
+        title: Text(
+          _screens[_selectedScreenIndex]['title'] as String,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
       ),
+      drawer: const MainDrawer(),
       body: _screens[_selectedScreenIndex]['screen'] as Widget,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectScreen,
