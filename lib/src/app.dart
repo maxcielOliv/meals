@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meals/src/data/dummy_data.dart';
 import 'package:meals/src/models/meal.dart';
+import 'package:meals/src/models/settings.dart';
 import 'package:meals/src/screens/categories_meals_page.dart';
 import 'package:meals/src/screens/meal_detail_page.dart';
 import 'package:meals/src/screens/settings_page.dart';
@@ -15,7 +16,37 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final List<Meal> _availableMeals = dummyMeals;
+  Settings settings = Settings();
+  List<Meal> _availableMeals = dummyMeals;
+  List<Meal> _favoriteMeals = [];
+  void _filterMeals(Settings settings) {
+    setState(() {
+      this.settings = settings;
+      _availableMeals = dummyMeals.where((meal) {
+        final filterGluten = settings.isGlutenFree && !meal.isGlutenFree;
+        final filterLactose = settings.isLactoseFree && !meal.isLactoseFree;
+        final filterVegan = settings.isVegan && !meal.isVegan;
+        final filterVegetarian = settings.isVegetarian && !meal.isVegetarian;
+
+        return !filterGluten &&
+            !filterLactose &&
+            !filterVegan &&
+            !filterVegetarian;
+      }).toList();
+    });
+  }
+
+  void _toggleFavorite(Meal meal) {
+    setState(() {
+      _favoriteMeals.contains(meal)
+          ? _favoriteMeals.remove(meal)
+          : _favoriteMeals.add(meal);
+    });
+  }
+
+  bool _isFavorite(Meal meal) {
+    return _favoriteMeals.contains(meal);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +69,18 @@ class _AppState extends State<App> {
         // ),
       ),
       routes: {
-        AppRoutes.home: (context) => const TabsPage(),
+        AppRoutes.home: (context) => TabsPage(
+              favoriteMeals: _favoriteMeals,
+            ),
         AppRoutes.categoriesMeals: (context) => CategoriesMealsPage(
               meals: _availableMeals,
             ),
-        AppRoutes.mealDetail: (context) => const MealDetailPage(),
-        AppRoutes.settings: (context) => const SettingsPage()
+        AppRoutes.mealDetail: (context) => MealDetailPage(
+              onToggleFavorite: _toggleFavorite,
+              isFavorite: _isFavorite,
+            ),
+        AppRoutes.settings: (context) =>
+            SettingsPage(settings: settings, onSettingsChanged: _filterMeals)
       },
     );
   }
